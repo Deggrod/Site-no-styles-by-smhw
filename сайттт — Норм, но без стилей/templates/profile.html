@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Профиль студента</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="/static/profile.js" defer></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Профиль студента</h1>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="profile-section">
+            <h2>Ваши данные</h2>
+            <div class="profile-grid">
+                <div class="profile-field">
+                    <span class="field-label">ФИО:</span>
+                    <span class="field-value">{{ user.fullname }}</span>
+                </div>
+                <div class="profile-field">
+                    <span class="field-label">Логин:</span>
+                    <span class="field-value">{{ user.username }}</span>
+                </div>
+                <div class="profile-field">
+                    <span class="field-label">Средний балл:</span>
+                    <span class="field-value">{{ "%.2f"|format(user.gpa) }}</span>
+                </div>
+                <div class="profile-field">
+                    <span class="field-label">Статус:</span>
+                    <span class="field-value">{{ "Есть задолженности" if user.has_debts else "Нет задолженностей" }}</span>
+                </div>
+                <div class="profile-field">
+                    <span class="field-label">Интересы:</span>
+                    <span class="field-value">{{ user.interests }}</span>
+                </div>
+                <div class="profile-field">
+                    <span class="field-label">Цели:</span>
+                    <span class="field-value">{{ user.goals }}</span>
+                </div>
+                <div class="profile-field">
+                    <span class="field-label">Навыки:</span>
+                    <span class="field-value">
+                        {% if user.python_skill %}Python{% endif %}
+                        {% if user.java_skill %}, Java{% endif %}
+                        {% if user.javascript_skill %}, JavaScript{% endif %}
+                        {% if not user.python_skill and not user.java_skill and not user.javascript_skill %}Нет{% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-section">
+            <h2>Ваши оценки</h2>
+            <div class="scores-grid">
+                <div class="score-item">
+                    <span class="score-label">Программирование:</span>
+                    <span class="score-value">{{ user.programming_score }}</span>
+                </div>
+                <div class="score-item">
+                    <span class="score-label">Матанализ:</span>
+                    <span class="score-value">{{ user.math_analysis_score }}</span>
+                </div>
+                <div class="score-item">
+                    <span class="score-label">АИГ:</span>
+                    <span class="score-value">{{ user.aig_score }}</span>
+                </div>
+            </div>
+            
+            <button class="toggle-btn" onclick="toggleForm('scores-form')">Изменить оценки</button>
+            
+            <form id="scores-form" method="POST" action="{{ url_for('update_scores') }}" class="hidden">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="programming_score">Программирование (1-5):</label>
+                        <input type="number" id="programming_score" name="programming_score" min="1" max="5" 
+                               value="{{ user.programming_score }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="math_analysis_score">Матанализ (1-5):</label>
+                        <input type="number" id="math_analysis_score" name="math_analysis_score" min="1" max="5" 
+                               value="{{ user.math_analysis_score }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="aig_score">АИГ (1-5):</label>
+                        <input type="number" id="aig_score" name="aig_score" min="1" max="5" 
+                               value="{{ user.aig_score }}" required>
+                    </div>
+                    <div class="form-group full-width">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="has_debts" {% if user.has_debts %}checked{% endif %}>
+                            Есть задолженности
+                        </label>
+                    </div>
+                    <div class="form-group full-width">
+                        <button type="submit" class="btn-save">Сохранить оценки</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="profile-section">
+            <h2>Безопасность</h2>
+            <button class="toggle-btn" onclick="toggleForm('password-form')">Изменить пароль</button>
+            
+            <form id="password-form" method="POST" action="{{ url_for('update_password') }}" class="hidden">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="current_password">Текущий пароль:</label>
+                        <input type="password" id="current_password" name="current_password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="new_password">Новый пароль:</label>
+                        <input type="password" id="new_password" name="new_password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm_password">Подтвердите пароль:</label>
+                        <input type="password" id="confirm_password" name="confirm_password" required>
+                    </div>
+                    <div class="form-group full-width">
+                        <button type="submit" class="btn-save">Сохранить пароль</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="profile-section">
+            <h2>Рекомендуемые треки</h2>
+            {% if recommendations %}
+                <div class="tracks-grid">
+                    {% for track in recommendations %}
+                    <div class="track-card">
+                        <h3>{{ track.name }}</h3>
+                        <p>{{ track.description }}</p>
+                        <div class="track-requirements">
+                            <span>Программирование: {{ track.required_programming }}+</span>
+                            <span>Матанализ: {{ track.required_math }}+</span>
+                            <span>АИГ: {{ track.required_aig }}+</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <a href="{{ url_for('ahp') }}" class="btn-ahp">Уточнить рекомендации (МАИ)</a>
+            {% else %}
+                <div class="no-tracks">
+                    <p>Нет доступных треков по вашим оценкам</p>
+                    <a href="{{ url_for('ahp') }}" class="btn-ahp">Попробовать МАИ-анализ</a>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="logout-section">
+            <a href="{{ url_for('logout') }}" class="btn-logout">Выйти из системы</a>
+        </div>
+    </div>
+
+    <script>
+        function toggleForm(formId) {
+            const form = document.getElementById(formId);
+            form.classList.toggle('hidden');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Сравнение треков</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="/static/script.js" defer></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Рекомендуемые треки</h1>
+    <div id="tracks"></div>
+    
+    <h2>Сравнение критериев (МАИ)</h2>
+    <table id="criteria-matrix">
+      <tr><th>Критерии</th><th>Важность (1-9)</th></tr>
+      <tr><td>Интерес vs. Сложность</td><td><input type="number" min="1" max="9" value="5"></td></tr>
+      <tr><td>Интерес vs. Практика</td><td><input type="number" min="1" max="9" value="3"></td></tr>
+    </table>
+    <button id="calculate-btn">Рассчитать веса</button>
+    <div id="weights-result"></div>
+  </div>
+</body>
+</html>

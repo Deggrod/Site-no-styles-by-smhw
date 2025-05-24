@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Анализ треков методом МАИ</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="container">
+    <header class="ahp-header">
+      <h1>Метод анализа иерархий (МАИ)</h1>
+      <p class="subtitle">Сравнение критериев выбора учебного трека</p>
+      <a href="{{ url_for('profile') }}" class="btn-back">← Назад к профилю</a>
+    </header>
+
+    <section class="criteria-section">
+      <h2>Критерии сравнения</h2>
+      <div class="criteria-controls">
+        <div class="input-group">
+          <input type="text" id="new-criterion" placeholder="Введите новый критерий">
+          <button id="add-criterion" class="btn">Добавить</button>
+        </div>
+        <button id="reset-criteria" class="btn btn-danger">Сбросить</button>
+      </div>
+      <div id="criteria-list" class="criteria-list">
+        <!-- Критерии будут добавляться здесь -->
+      </div>
+    </section>
+
+    <section class="matrix-section">
+      <h2>Матрица парных сравнений</h2>
+      <p>Оцените важность критериев по шкале от 1 до 9</p>
+      <div class="matrix-container">
+        <table id="ahp-matrix">
+          <!-- Матрица будет генерироваться через JS -->
+        </table>
+      </div>
+      <div class="legend">
+        <p><strong>Шкала оценки:</strong></p>
+        <ul>
+          <li>1 - Равная важность</li>
+          <li>3 - Умеренное превосходство</li>
+          <li>5 - Существенное превосходство</li>
+          <li>7 - Значительное превосходство</li>
+          <li>9 - Абсолютное превосходство</li>
+          <li>2,4,6,8 - Промежуточные значения</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="actions-section">
+      <button id="calculate-btn" class="btn btn-primary">Рассчитать веса критериев</button>
+      <button id="suggest-tracks-btn" class="btn btn-secondary" disabled>Подобрать треки</button>
+    </section>
+
+    <section id="results-section" class="hidden">
+      <h2>Результаты анализа</h2>
+      
+      <div class="results-grid">
+        <div class="weights-chart">
+          <h3>Веса критериев</h3>
+          <canvas id="weightsChart"></canvas>
+        </div>
+        
+        <div class="consistency-check">
+          <h3>Согласованность оценок</h3>
+          <div id="consistency-result"></div>
+        </div>
+      </div>
+
+      <div class="tracks-suggestions hidden">
+        <h3>Рекомендуемые треки</h3>
+        <div id="tracks-list" class="tracks-list">
+          <!-- Список треков будет здесь -->
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="/static/ahp.js"></script>
+</body>
+</html>

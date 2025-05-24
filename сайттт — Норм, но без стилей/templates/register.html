@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Регистрация</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Регистрация в системе</h1>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <form method="POST">
+            <div class="form-group">
+                <label>ФИО:</label>
+                <input type="text" name="fullname" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Логин:</label>
+                <input type="text" name="username" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Пароль:</label>
+                <input type="password" name="password" required>
+            </div>
+            
+            <h3>Введите ваши оценки (от 1 до 5):</h3>
+            
+            <div class="form-group">
+                <label>Программирование:</label>
+                <input type="number" name="programming_score" min="1" max="5" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Математический анализ:</label>
+                <input type="number" name="math_analysis_score" min="1" max="5" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Алгебра и геометрия (АИГ):</label>
+                <input type="number" name="aig_score" min="1" max="5" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Интересы:</label>
+                <select name="interests" required>
+                    <option value="">Выберите вариант</option>
+                    <option value="Точные науки/цифры">Точные науки/цифры</option>
+                    <option value="Программирование">Программирование</option>
+                    <option value="Проверка">Проверка</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Профессиональные цели:</label>
+                <select name="goals" required>
+                    <option value="">Выберите вариант</option>
+                    <option value="Тимлид/тех лид">Тимлид/тех лид</option>
+                    <option value="Разработчик">Разработчик</option>
+                    <option value="Тестировщик">Тестировщик</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Навыки (языки программирования):</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="python_skill"> Python</label>
+                </div>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="java_skill"> Java</label>
+                </div>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="javascript_skill"> JavaScript</label>
+                </div>
+            </div>
+            
+            <div class="checkbox-group">
+                <label>
+                    <input type="checkbox" name="has_debts"> Есть академические задолженности
+                </label>
+            </div>
+            
+            <button type="submit">Зарегистрироваться</button>
+        </form>
+        
+        <p>Уже есть аккаунт? <a href="{{ url_for('login') }}">Войти в систему</a></p>
+    </div>
+</body>
+</html>
