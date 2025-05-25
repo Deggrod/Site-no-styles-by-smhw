@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}МАИ Анализ | Учебный портал{% endblock %}
+
+{% block head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+<section class="ahp-section">
+    <header class="ahp-header">
+        <h1><i class="fas fa-project-diagram"></i> Метод анализа иерархий</h1>
+        <p class="subtitle">Персонализированный подбор учебного трека</p>
+        <a href="{{ url_for('profile') }}" class="btn btn-back">
+            <i class="fas fa-arrow-left"></i> Назад к профилю
+        </a>
+    </header>
+
+    <div class="ahp-steps">
+        <div class="step active">
+            <span class="step-number">1</span>
+            <span class="step-title">Критерии</span>
+        </div>
+        <div class="step">
+            <span class="step-number">2</span>
+            <span class="step-title">Сравнение</span>
+        </div>
+        <div class="step">
+            <span class="step-number">3</span>
+            <span class="step-title">Результаты</span>
+        </div>
+    </div>
+
+    <section class="section">
+        <h2><i class="fas fa-list-ol"></i> Критерии выбора</h2>
+        
+        <div class="criteria-controls">
+            <div class="input-group">
+                <input type="text" id="new-criterion" placeholder="Добавьте критерий...">
+                <button id="add-criterion" class="btn btn-secondary">
+                    <i class="fas fa-plus"></i> Добавить
+                </button>
+            </div>
+            <button id="reset-criteria" class="btn btn-danger">
+                <i class="fas fa-trash-alt"></i> Сбросить
+            </button>
+        </div>
+        
+        <div id="criteria-list" class="criteria-list">
+            {% for criterion in ['Соответствие интересам', 'Полезность для карьеры', 'Уровень сложности'] %}
+            <div class="criterion-tag">
+                {{ criterion }}
+                <button class="remove-criterion"><i class="fas fa-times"></i></button>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="section" id="comparison-section">
+        <h2><i class="fas fa-balance-scale"></i> Парное сравнение критериев</h2>
+        <p>Оцените важность критериев по шкале от 1 (равная важность) до 9 (абсолютная важность)</p>
+        
+        <div class="matrix-container">
+            <table id="ahp-matrix">
+                <!-- JS will generate matrix here -->
+            </table>
+        </div>
+        
+        <div class="legend-box">
+            <h4><i class="fas fa-info-circle"></i> Шкала оценки:</h4>
+            <ul class="legend-list">
+                <li><span class="legend-value">1</span> - Равная важность</li>
+                <li><span class="legend-value">3</span> - Умеренное превосходство</li>
+                <li><span class="legend-value">5</span> - Существенное превосходство</li>
+                <li><span class="legend-value">7</span> - Значительное превосходство</li>
+                <li><span class="legend-value">9</span> - Абсолютное превосходство</li>
+                <li>Чётные значения - промежуточные оценки</li>
+            </ul>
+        </div>
+    </section>
+
+    <div class="actions">
+        <button id="calculate-btn" class="btn btn-primary btn-lg">
+            <i class="fas fa-calculator"></i> Рассчитать веса
+        </button>
+        <button id="suggest-tracks-btn" class="btn btn-success btn-lg" disabled>
+            <i class="fas fa-road"></i> Рекомендовать треки
+        </button>
+    </div>
+
+    <section class="section hidden" id="results-section">
+        <h2><i class="fas fa-chart-pie"></i> Результаты анализа</h2>
+        
+        <div class="results-grid">
+            <div class="card">
+                <h3>Веса критериев</h3>
+                <canvas id="weightsChart"></canvas>
+            </div>
+            
+            <div class="card">
+                <h3>Согласованность</h3>
+                <div id="consistency-result" class="consistency-result">
+                    <div class="consistency-message success">
+                        <i class="fas fa-check-circle"></i>
+                        <p>Матрица согласована (CR ≤ 0.1)</p>
+                    </div>
+                    <div class="consistency-value">
+                        Коэффициент согласованности: <strong>0.05</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section hidden" id="tracks-section">
+        <h2><i class="fas fa-road"></i> Рекомендуемые треки</h2>
+        <div id="tracks-list" class="tracks-list">
+            <!-- JS will populate this -->
+        </div>
+    </section>
+</section>
+
+<script src="{{ url_for('static', filename='ahp.js') }}"></script>
+{% endblock %}

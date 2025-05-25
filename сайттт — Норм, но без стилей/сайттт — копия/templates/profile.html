@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль студента | Учебный портал</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="profile-header">
+            <h1>
+                <i class="fas fa-user-graduate"></i> Профиль студента
+            </h1>
+            <div class="user-meta">
+                <span class="gpa-badge">
+                    GPA: {{ "%.2f"|format(user.gpa) }}
+                </span>
+                <span class="status-badge {{ 'has-debts' if user.has_debts else 'no-debts' }}">
+                    {{ "Есть задолженности" if user.has_debts else "Нет задолженностей" }}
+                </span>
+            </div>
+        </header>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        <i class="fas fa-{{ 'check-circle' if category == 'success' else 'exclamation-triangle' }}"></i>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <section class="section">
+            <div class="section-header">
+                <h2><i class="fas fa-id-card"></i> Личные данные</h2>
+            </div>
+            
+            <div class="grid grid-profile">
+                <div class="info-item">
+                    <span class="info-label"><i class="fas fa-signature"></i> ФИО:</span>
+                    <span class="info-value">{{ user.fullname }}</span>
+                </div>
+                
+                <div class="info-item">
+                    <span class="info-label"><i class="fas fa-user"></i> Логин:</span>
+                    <span class="info-value">{{ user.username }}</span>
+                </div>
+                
+                <div class="info-item">
+                    <span class="info-label"><i class="fas fa-heart"></i> Интересы:</span>
+                    <span class="info-value">{{ user.interests }}</span>
+                </div>
+                
+                <div class="info-item">
+                    <span class="info-label"><i class="fas fa-bullseye"></i> Цели:</span>
+                    <span class="info-value">{{ user.goals }}</span>
+                </div>
+                
+                <div class="info-item">
+                    <span class="info-label"><i class="fas fa-code"></i> Навыки:</span>
+                    <span class="info-value">
+                        {% if user.python_skill %}<span class="skill-badge">Python</span>{% endif %}
+                        {% if user.java_skill %}<span class="skill-badge">Java</span>{% endif %}
+                        {% if user.javascript_skill %}<span class="skill-badge">JavaScript</span>{% endif %}
+                        {% if not user.python_skill and not user.java_skill and not user.javascript_skill %}
+                            <span class="text-muted">Не указаны</span>
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2><i class="fas fa-chart-line"></i> Успеваемость</h2>
+                <button class="btn btn-secondary" onclick="toggleForm('scores-form')">
+                    <i class="fas fa-edit"></i> Изменить
+                </button>
+            </div>
+            
+            <div class="grid grid-3">
+                <div class="card score-card">
+                    <h3>Программирование</h3>
+                    <div class="score-value">{{ user.programming_score }}</div>
+                    <div class="progress-container">
+                        <div class="progress-bar" style="width: {{ user.programming_score * 20 }}%"></div>
+                    </div>
+                </div>
+                
+                <div class="card score-card">
+                    <h3>Матанализ</h3>
+                    <div class="score-value">{{ user.math_analysis_score }}</div>
+                    <div class="progress-container">
+                        <div class="progress-bar" style="width: {{ user.math_analysis_score * 20 }}%"></div>
+                    </div>
+                </div>
+                
+                <div class="card score-card">
+                    <h3>АИГ</h3>
+                    <div class="score-value">{{ user.aig_score }}</div>
+                    <div class="progress-container">
+                        <div class="progress-bar" style="width: {{ user.aig_score * 20 }}%"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <form id="scores-form" method="POST" action="{{ url_for('update_scores') }}" class="hidden mt-3">
+                <div class="grid grid-3">
+                    <div class="form-group">
+                        <label for="programming_score">Программирование (1-5):</label>
+                        <input type="number" id="programming_score" name="programming_score" 
+                               min="1" max="5" value="{{ user.programming_score }}" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="math_analysis_score">Матанализ (1-5):</label>
+                        <input type="number" id="math_analysis_score" name="math_analysis_score" 
+                               min="1" max="5" value="{{ user.math_analysis_score }}" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="aig_score">АИГ (1-5):</label>
+                        <input type="number" id="aig_score" name="aig_score" 
+                               min="1" max="5" value="{{ user.aig_score }}" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="checkbox-container">
+                        <input type="checkbox" name="has_debts" {{ 'checked' if user.has_debts }}>
+                        <span class="checkmark"></span>
+                        Есть академические задолженности
+                    </label>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Сохранить изменения
+                </button>
+            </form>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2><i class="fas fa-lock"></i> Безопасность</h2>
+                <button class="btn btn-secondary" onclick="toggleForm('password-form')">
+                    <i class="fas fa-key"></i> Изменить
+                </button>
+            </div>
+            
+            <form id="password-form" method="POST" action="{{ url_for('update_password') }}" class="hidden">
+                <div class="grid grid-2">
+                    <div class="form-group">
+                        <label for="current_password">Текущий пароль:</label>
+                        <input type="password" id="current_password" name="current_password" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="new_password">Новый пароль:</label>
+                        <input type="password" id="new_password" name="new_password" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirm_password">Подтвердите пароль:</label>
+                        <input type="password" id="confirm_password" name="confirm_password" required>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Обновить пароль
+                </button>
+            </form>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2><i class="fas fa-road"></i> Рекомендуемые треки</h2>
+            </div>
+            
+            {% if recommendations %}
+                <div class="grid grid-3">
+                    {% for track in recommendations %}
+                    <div class="card track-card">
+                        <div class="match-badge">85%</div>
+                        <h3>{{ track.name }}</h3>
+                        <p class="track-description">{{ track.description }}</p>
+                        
+                        <div class="track-footer">
+                            <div class="requirements">
+                                <span class="req-item"><i class="fas fa-code"></i> {{ track.required_programming }}+</span>
+                                <span class="req-item"><i class="fas fa-calculator"></i> {{ track.required_math }}+</span>
+                                <span class="req-item"><i class="fas fa-shapes"></i> {{ track.required_aig }}+</span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <div class="text-center mt-3">
+                    <a href="{{ url_for('ahp') }}" class="btn btn-primary">
+                        <i class="fas fa-sliders-h"></i> Персонализировать рекомендации
+                    </a>
+                </div>
+            {% else %}
+                <div class="no-results">
+                    <i class="fas fa-info-circle"></i>
+                    <p>Нет доступных треков по вашим текущим оценкам</p>
+                    <a href="{{ url_for('ahp') }}" class="btn btn-primary mt-2">
+                        <i class="fas fa-calculator"></i> Попробовать МАИ-анализ
+                    </a>
+                </div>
+            {% endif %}
+        </section>
+
+        <footer class="footer mt-4">
+            <a href="{{ url_for('logout') }}" class="btn btn-logout">
+                <i class="fas fa-sign-out-alt"></i> Выйти из системы
+            </a>
+        </footer>
+    </div>
+
+    <script>
+        function toggleForm(formId) {
+            const form = document.getElementById(formId);
+            form.classList.toggle('hidden');
+            
+            // Плавная прокрутка к форме
+            if (!form.classList.contains('hidden')) {
+                form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+    </script>
+</body>
+</html>

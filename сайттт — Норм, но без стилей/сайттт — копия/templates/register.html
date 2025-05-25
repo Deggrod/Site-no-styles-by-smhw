@@ -1,0 +1,104 @@
+<{% extends "base.html" %}
+
+{% block title %}Регистрация{% endblock %}
+
+{% block content %}
+<section class="auth-section">
+    <div class="auth-card">
+        <h1><i class="fas fa-user-plus"></i> Регистрация</h1>
+        
+        <form method="POST" class="auth-form">
+            <div class="form-group">
+                <label for="fullname"><i class="fas fa-signature"></i> ФИО</label>
+                <input type="text" id="fullname" name="fullname" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="username"><i class="fas fa-user"></i> Логин</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password"><i class="fas fa-lock"></i> Пароль</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            
+            <h3 class="form-section-title"><i class="fas fa-graduation-cap"></i> Академические данные</h3>
+            
+            <div class="grid grid-3">
+                <div class="form-group">
+                    <label for="programming_score">Программирование</label>
+                    <input type="number" id="programming_score" name="programming_score" min="1" max="5" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="math_analysis_score">Матанализ</label>
+                    <input type="number" id="math_analysis_score" name="math_analysis_score" min="1" max="5" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="aig_score">АИГ</label>
+                    <input type="number" id="aig_score" name="aig_score" min="1" max="5" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="interests"><i class="fas fa-heart"></i> Интересы</label>
+                <select id="interests" name="interests" required>
+                    <option value="">Выберите интересы</option>
+                    <option value="Точные науки/цифры">Точные науки/цифры</option>
+                    <option value="Программирование">Программирование</option>
+                    <option value="Проверка">Проверка</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="goals"><i class="fas fa-bullseye"></i> Профессиональные цели</label>
+                <select id="goals" name="goals" required>
+                    <option value="">Выберите цели</option>
+                    <option value="Тимлид/тех лид">Тимлид/тех лид</option>
+                    <option value="Разработчик">Разработчик</option>
+                    <option value="Тестировщик">Тестировщик</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label><i class="fas fa-code"></i> Навыки программирования</label>
+                <div class="skills-grid">
+                    <label class="skill-checkbox">
+                        <input type="checkbox" name="python_skill">
+                        <span class="checkmark"></span>
+                        Python
+                    </label>
+                    <label class="skill-checkbox">
+                        <input type="checkbox" name="java_skill">
+                        <span class="checkmark"></span>
+                        Java
+                    </label>
+                    <label class="skill-checkbox">
+                        <input type="checkbox" name="javascript_skill">
+                        <span class="checkmark"></span>
+                        JavaScript
+                    </label>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="checkbox-container">
+                    <input type="checkbox" name="has_debts">
+                    <span class="checkmark"></span>
+                    Есть академические задолженности
+                </label>
+            </div>
+            
+            <button type="submit" class="btn btn-primary btn-block">
+                <i class="fas fa-user-plus"></i> Зарегистрироваться
+            </button>
+        </form>
+        
+        <div class="auth-links">
+            <a href="{{ url_for('login') }}">Уже есть аккаунт? Войти</a>
+        </div>
+    </div>
+</section>
+{% endblock %}
